@@ -8,9 +8,9 @@ import Register from "./screen/Register";
 
 const App = () => {
   return (
-    // <Home />
+    <Home />
     // <Login />
-    <Register />
+    // <Register />
   );
 };
 

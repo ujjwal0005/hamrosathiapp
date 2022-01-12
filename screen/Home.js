@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
+  ImageBackground,
   StyleSheet,
   ScrollView,
   Button,
@@ -15,9 +16,20 @@ import {
 
 export default function Home() {
   const back = { uri: "../assets/logo.png" };
-  const [number, setPhonenumber] = useState("");
-  const [password, setPassword] = useState("");
-
+  const [Items, setItems] = useState([
+    { name: "ALL" },
+    { name: "Electricity" },
+    { name: "Plumbing" },
+    { name: "Development" },
+    { name: "Tution" },
+    { name: "Item 6" },
+    { name: "Item 7" },
+    { name: "Item 8" },
+    { name: "Item 9" },
+    { name: "Item 10" },
+    { name: "Item 11" },
+  ]);
+  const [Refreshing, setRefreshing] = useState(false);
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -25,36 +37,37 @@ export default function Home() {
         resizeMode="cover"
         style={styles.back}
       >
-        <StatusBar style="auto" />
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Phone Number"
-            placeholderTextColor="#003f5c"
-            onChangeText={(email) => setPhonenumber(number)}
+        <View>
+          <FlatList
+            horizontal
+            keyExtractor={(item, index) => index.toString()}
+            data={Items}
+            renderItem={({ item }) => (
+              <View style={styles.item}>
+                <Text style={styles.text}>{item.name}</Text>
+              </View>
+            )}
+            style={styles.body}
+            refreshControl={
+              <RefreshControl refreshing={Refreshing} colors={["#ff00ff"]} />
+            }
           />
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Password"
-            placeholderTextColor="#003f5c"
-            secureTextEntry={true}
-            onChangeText={(password) => setPassword(password)}
+        <View style={styles.itemcard}>
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            data={Items}
+            renderItem={({ item }) => (
+              <View style={styles.card}>
+                <Text style={styles.text}>{item.name}</Text>
+              </View>
+            )}
+            style={styles.body}
+            refreshControl={
+              <RefreshControl refreshing={Refreshing} colors={["#ff00ff"]} />
+            }
           />
         </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot_button}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.loginBtn}
-          onPress={() => console.log("hello")}
-        >
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.registerbtn}>
-          <Text style={styles.registerText}>Register Here</Text>
-        </TouchableOpacity>
       </ImageBackground>
     </View>
   );
@@ -66,45 +79,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
+  itemcard: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
   back: {
     zIndex: 0,
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     width: "100%",
-    height: "400%",
+    // height: "400%",
   },
-
-  inputView: {
-    backgroundColor: "#FFFF",
-    borderRadius: 10,
-    width: "70%",
-    height: 45,
-    marginBottom: 20,
-    alignItems: "center",
-  },
-
-  TextInput: {
-    height: 50,
-    flex: 1,
-    padding: 10,
-    marginLeft: 20,
-  },
-
-  forgot_button: {
-    color: "#FFFF",
-    height: 30,
-    marginBottom: 30,
-  },
-
-  loginBtn: {
-    width: "80%",
-    borderRadius: 25,
-    height: 50,
-    alignItems: "center",
+  item: {
+    height: 40,
+    width: 100,
+    margin: 5,
+    backgroundColor: "#FFF",
     justifyContent: "center",
-    marginTop: 40,
-    backgroundColor: "#FF1493",
+    alignItems: "center",
+    borderRadius: 50,
+  },
+  card: {
+    height: 200,
+    width: 350,
+    margin: 10,
+    backgroundColor: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  text: {
+    // alignSelf: "center",
   },
 });
