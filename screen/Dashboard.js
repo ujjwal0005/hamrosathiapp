@@ -15,56 +15,30 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-import { AuthContext } from '../components/context'
 
-export default function Home() {
-  const {signOut} = React.useContext(AuthContext);
+export default function Dashboard() {
   const back = { uri: "../assets/logo.png" };
-  const image = require("../assets/doc.jpeg");
+  const image = require("../assets/plub.jpg");
   const [Items, setItems] = useState([
     {
-      name : "Dr. Vishal Shrestha",
-      experience : "2078-09-09",
-      Appointment : "Nrs1000-1500",
-      publised_by: "Ujjwal Sapkota",
-      src: image,
-    },
-
-    {
-      name :"Dr. Vishal Shrestha",
+      title: "Electrician Needed",
       date: "2078-09-09",
       price: "Nrs1000-1500",
       publised_by: "Ujjwal Sapkota",
+      category: "Electricity",
       src: image,
     },
   ]);
   const [Refreshing, setRefreshing] = useState(false);
   return (
     <View style={styles.container}>
-        <View>
-          <FlatList
-            horizontal
-            keyExtractor={(item, index) => index.toString()}
-            data={Items}
-            // renderItem={({ item }) => (
-            //   <View style={styles.item}>
-            //     <Text style={styles.text}>{item.category}</Text>
-            //   </View>
-            // )}
-            style={styles.body}
-            refreshControl={
-              <RefreshControl refreshing={Refreshing} colors={["#8dbafe"]} />
-            }
-          />
-        </View>
-
         <View style={styles.itemcard}>
           <FlatList
             keyExtractor={(item, index) => index.toString()}
             data={Items}
             style={styles.body}
             refreshControl={
-              <RefreshControl refreshing={Refreshing} colors={["#8dbafe"]} />
+              <RefreshControl refreshing={Refreshing} colors={["#ff00ff"]} />
             }
             renderItem={({ item }) => (
               <View style={styles.card}>
@@ -72,16 +46,28 @@ export default function Home() {
                   <Image style={styles.image} source={item.src} />
                   <View>
                     <Text style={styles.text}>{item.title}</Text>
-                    <Text style={styles.text}>Experience: {item.date}</Text>
+                    <Text style={styles.text}>Date: {item.date}</Text>
                     <Text style={styles.text}>Client: {item.publised_by}</Text>
                     <Text style={styles.text}>PriceRange: {item.price}</Text>
                     <TouchableOpacity
                       style={styles.bidbutton}
-                      onPress={()=>{signOut()}}
+                      onPress={() => console.log("hello")}
                     >
                       <Text style={styles.loginText}>Bid your price</Text>
                     </TouchableOpacity>
                   </View>
+                </View>
+                <View style={styles.scroll}>
+                  <FlatList
+                    horizontal
+                    keyExtractor={(item, index) => index.toString()}
+                    data={Items}
+                    renderItem={({ item }) => (
+                      <View style={styles.list}>
+                        <Text style={styles.listtext}>{item.category}</Text>
+                      </View>
+                    )}
+                  />
                 </View>
               </View>
             )}
@@ -139,7 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   card: {
-    height: 250,
+    height: 200,
     margin: 10,
     backgroundColor: "#FFF",
     borderRadius: 10,
