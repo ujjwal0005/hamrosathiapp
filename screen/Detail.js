@@ -80,6 +80,7 @@ export default function Detail() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#247BA0",
   },
   itemcard: {},
   bidbutton: {

@@ -15,9 +15,11 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-import { AuthContext } from '../components/context'
+import { AuthContext } from '../components/context';
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
+  const navigation = useNavigation();
   const {signOut} = React.useContext(AuthContext);
   const back = { uri: "../assets/logo.png" };
   const image = require("../assets/doc.jpeg");
@@ -77,7 +79,7 @@ export default function Home() {
                     <Text style={styles.text}>PriceRange: {item.price}</Text>
                     <TouchableOpacity
                       style={styles.bidbutton}
-                      onPress={()=>{signOut()}}
+                      onPress = {() => navigation.navigate('Appointment')}
                     >
                       <Text style={styles.loginText}>Bid your price</Text>
                     </TouchableOpacity>
@@ -94,6 +96,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#247BA0",
   },
   itemcard: {},
   bidbutton: {

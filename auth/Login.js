@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/context";
-import {handleLogin} from "../api/Auth";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 
 
 export default function Login() {
@@ -24,23 +25,23 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require("../assets/back.jpeg")} style={styles.back}>
-
       <StatusBar style="auto" />
       <View style={styles.inputView}>
+       <FontAwesome name="user-o" size={30} color="#ffff" />
         <TextInput
-          style={styles.TextInput}
-          placeholder="Phone Number"
-          placeholderTextColor="#003f5c"
+          style={styles.textInput}
+          placeholder="Enter Your Email"
+          placeholderTextColor="#ffff"
           value={username}
           onChangeText={(number) => setUsername(number)}
         />
       </View>
       <View style={styles.inputView}>
+      <FontAwesome name="lock" size={35} color="#ffff" />
         <TextInput
-          style={styles.TextInput}
+          style={styles.textInput}
           placeholder="Password"
-          placeholderTextColor="#003f5c"
+          placeholderTextColor="#ffff"
           secureTextEntry={true}
           value={password}
           onChangeText={(password) => setPassword(password)}
@@ -53,10 +54,9 @@ export default function Login() {
       <TouchableOpacity style={styles.registerbtn} onPress = {() => navigation.navigate('Register')}>
         <Text style={styles.registerText}>Don't Have an Account?</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <Text style={styles.forgot_button}>Forgot Password?</Text>
-      </TouchableOpacity>
-   </ImageBackground>
+      </TouchableOpacity> */}
     </View>
   );
 }
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#247BA0",
   },
 
   back: {
@@ -78,47 +79,37 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    backgroundColor: "#FFFF",
-    borderRadius: 10,
-    width: "70%",
-    height: 45,
-    marginBottom: 20,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    width: "75%",
+    marginBottom: 40,
     alignItems: "center",
-    shadowColor: "#52006A",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    padding:10,
+  },
+  loginText:{
+    fontSize:18,
+    marginTop:5,
   },
 
-  TextInput: {
-    height: 50,
-    flex: 1,
-    padding: 10,
-
-  },
-
-  forgot_button: {
-    color:"#fff",
-    height: 30,
-    marginBottom: 30,
-    fontStyle: 'italic',
-    fontSize: 15,
-    marginTop: 8,
-    textDecorationLine: 'underline',
-  },
+  //  forgot_button: {
+  //   color:"#fff",
+  //   height: 30,
+  //   marginBottom: 30,
+  //   fontStyle: 'italic',
+  //   fontSize: 15,
+  //   marginTop: 8,
+  //   textDecorationLine: 'underline',
+  // },
 
   loginBtn: {
     width: "50%",
-    borderRadius: 10,
+    borderRadius: 5,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 40,
-    backgroundColor: "#8dbafe",
+    backgroundColor: "#ffffe0",
     shadowColor: "#52006A",
     shadowOffset: {
       width: 0,
@@ -135,5 +126,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 8,
     textDecorationLine: 'underline',
-  }
+  },
+  textInput: {
+    height: 40,
+    padding: 10,
+    flex: 1,
+    fontSize: 16,
+    marginTop: 0,
+    paddingLeft: 30,
+    color: '#fff',
+  },
 });

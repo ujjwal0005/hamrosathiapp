@@ -4,30 +4,55 @@ import { NavigationContainer } from '@react-navigation/native'
 import AuthNavigation from './AuthNavigation';
 import { AuthContext } from '../components/context'
 import AppNavigation from './AppNavigation';
-import {handleLogin} from "../api/Auth";
+import { Alert } from 'react-native';
+import {handleLogin, handleRegister} from "../api/Auth";
 
 const RootNavigation = () => {
-
       const[isLoading,setIsLoading] = React.useState(true);
       const[userToken,setUserToken] = React.useState(null);  
+      const [responseMsg, setResponseMsg] = React.useState("");
+      const [dialogVisible, setDialogVisible] = React.useState(false);
+
       const authContext = React.useMemo(() => ({
           signIn: async(username,password) => { 
+            console.log(username,password)
             try {
               const res = await handleLogin(username,password);
-              console.log(res)
-              
+              console.log(username,password,res.status)
+              setUserToken('fgkj')
+              setIsLoading(false);
+              // if (res.status == 200) {
+              //   if (res.data.token) {
+              //     setUserToken(res.data.token);
+              //     Alert.alert('Logged In','Successfully')
+              //     setResponseMsg("Logged in successfully!");			
+              //   } else {
+              //     console.log('res.message1231',res.data.message)
+              //     setResponseMsg(res.data.message);
+              //     setDialogVisible(true);
+              //   }
+              // } else if (res.status == "failed") {
+              //   console.log('res.message',res.message)
+              //   Alert.alert('Data Incorrect')
+              //   setResponseMsg(res.message);
+              //   setDialogVisible(true);
+              // }
             } catch (error) {
               console.log("error aayo",error)
             }
-            // setUserToken('fgkj')
-
-            // setIsLoading(false);
           },
           signOut: () => {
             setUserToken(null)
             setIsLoading(false);
         },
-        signUp: () => {
+        signUp: async(name,email,number,confirm_password,gender,dob,password) => { 
+          try {
+            const res = await handleRegister(name,email,number,confirm_password,gender,dob,password);
+            console.log(res)
+            
+          } catch (error) {
+            console.log("error aayo",error)
+          }
           setUserToken('fgkj')
           setIsLoading(false);
         },
