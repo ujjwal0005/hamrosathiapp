@@ -24,6 +24,7 @@ import EditProfileScreen from "../screen/EditProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CreateBlog from "../screen/CreateBlog";
 
 
 const Tab = createBottomTabNavigator();
@@ -59,6 +60,7 @@ const AppNavigationStack = () => {
             <appHomeStack.Screen name="EditProfile" component={EditProfileScreen} />
             <appHomeStack.Screen name="Appointment" component={Appointment} />
             <appHomeStack.Screen name="Post" component={Post} />
+            <appHomeStack.Screen name="Createblog" component={CreateBlog} />
         </appHomeStack.Navigator>
     );
 }

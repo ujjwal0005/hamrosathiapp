@@ -33,74 +33,74 @@ export default function Register() {
     <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.inputView}>
-        <FontAwesome name="user-o" size={30} color="#ffff" />
+        <FontAwesome name="user-o" size={30} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             placeholder="Full Name"
             value={name}
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             onChangeText={(name) => setName(name)}
           />
         </View>
         <View style={styles.inputView}>
-        <FontAwesome name="envelope" size={25} color="#ffff" />
+        <FontAwesome name="envelope" size={25} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             placeholder="Email"
             value={email}
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             onChangeText={(val) => setEmail(val)}
           />
         </View>
         <View style={styles.inputView}>
-        <FontAwesome name="phone" size={30} color="#ffff" />
+        <FontAwesome name="phone" size={30} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             placeholder="Phone Number"
             value={number}
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             onChangeText={(number) => setPhonenumber(number)}
           />
         </View>
         <View style={styles.inputView}>
-        <FontAwesome name="lock" size={30} color="#ffff" />
+        <FontAwesome name="lock" size={30} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             placeholder="Password"
             value={password}
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
           />
         </View>
         <View style={styles.inputView}>
-        <FontAwesome name="lock" size={30} color="#ffff" />
+        <FontAwesome name="lock" size={30} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             value={confirm_password}
             placeholder="Confirm Password"
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             secureTextEntry={true}
             onChangeText={(confirm_password) => setConfirm_password(confirm_password)}
           />
         </View>
         <View style={styles.inputView}>
-        <FontAwesome name="user-o" size={30} color="#ffff" />
+        <FontAwesome name="user-o" size={30} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             placeholder="Gender"
             value={gender}
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             onChangeText={(val) => setGender(val)}
           />
         </View>
         <View style={styles.inputView}>
-        <FontAwesome name="calendar-minus-o" size={25} color="#ffff" />
+        <FontAwesome name="calendar-minus-o" size={25} style={styles.icon} />
           <TextInput
             style={styles.textInput}
             value={dob}
             placeholder="Date of Birth"
-            placeholderTextColor="#003f5c"
+            placeholderTextColor="black"
             onChangeText={(val) => setDob(val)}
           />
         </View>
@@ -124,7 +124,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#247BA0",
+    // backgroundColor: "#247BA0",
+  },
+  icon:{
+    color:"black"
   },
 
   back: {
@@ -139,7 +142,7 @@ const styles = StyleSheet.create({
   inputView: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
+    borderBottomColor: 'black',
     width: "75%",
     marginBottom: 15,
     alignItems: "center",
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
   loginText:{
     fontStyle: 'italic',
     fontSize:18,
-    color:'#ffff',
+    color:'black',
     textDecorationLine: 'underline',
     marginTop:5,
   },
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
-    backgroundColor: "#ffffe0",
+    backgroundColor: "#247BA0",
     shadowColor: "#52006A",
     shadowOffset: {
       width: 0,
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
   },
 
   registerText:{
-    color: "black",
+    color: "#fff",
     fontSize: 18,
     alignItems: "center",
   },
@@ -193,6 +196,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 0,
     paddingLeft: 30,
-    color: '#fff',
+    color: 'black',
   },
 });

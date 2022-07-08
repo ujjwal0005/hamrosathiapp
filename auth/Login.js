@@ -27,7 +27,7 @@ export default function Login() {
     <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.inputView}>
-       <FontAwesome name="user-o" size={30} color="#ffff" />
+       <FontAwesome name="user-o" size={30} color="black" />
         <TextInput
           style={styles.textInput}
           placeholder="Enter Your Email"
@@ -37,7 +37,7 @@ export default function Login() {
         />
       </View>
       <View style={styles.inputView}>
-      <FontAwesome name="lock" size={35} color="#ffff" />
+      <FontAwesome name="lock" size={35} color="black" />
         <TextInput
           style={styles.textInput}
           placeholder="Password"
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#247BA0",
+    // backgroundColor: "#247BA0",
   },
 
   back: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   inputView: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
+    borderBottomColor: 'black',
     width: "75%",
     marginBottom: 40,
     alignItems: "center",
@@ -89,19 +89,9 @@ const styles = StyleSheet.create({
   },
   loginText:{
     fontSize:18,
-    marginTop:5,
+    // marginTop:5,
+    color:"#fff"
   },
-
-  //  forgot_button: {
-  //   color:"#fff",
-  //   height: 30,
-  //   marginBottom: 30,
-  //   fontStyle: 'italic',
-  //   fontSize: 15,
-  //   marginTop: 8,
-  //   textDecorationLine: 'underline',
-  // },
-
   loginBtn: {
     width: "50%",
     borderRadius: 5,
@@ -109,7 +99,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 40,
-    backgroundColor: "#ffffe0",
+    backgroundColor: "#247BA0",
     shadowColor: "#52006A",
     shadowOffset: {
       width: 0,
@@ -121,7 +111,7 @@ const styles = StyleSheet.create({
   },
 
   registerText:{
-    color: "#fff",
+    color: "black",
     fontStyle: 'italic',
     fontSize: 15,
     marginTop: 8,
@@ -134,6 +124,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 0,
     paddingLeft: 30,
-    color: '#fff',
+    color: 'black',
   },
 });
