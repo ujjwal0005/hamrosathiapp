@@ -17,11 +17,15 @@ import {
 } from "react-native";
 import Home from "../screen/Home";
 import Detail from "../screen/Detail";
-import Dashboard from "../screen/Dashboard";
+import Profile from "../screen/Profile";
+import Appointment from "../screen/Appointment";
 import Post from "../screen/Post";
+import EditProfileScreen from "../screen/EditProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AuthContext } from "../components/context";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CreateBlog from "../screen/CreateBlog";
+
 
 const Tab = createBottomTabNavigator();
 const appHomeStack = createNativeStackNavigator();
@@ -40,7 +44,7 @@ const CustomTabBarButton = ({children,onPress}) =>(
         width:70,
         height:70,
         borderRadius:35,
-        backgroundColor:'#3EB489'
+        backgroundColor:'#247BA0'
       }}>
         {children}
       </View>
@@ -52,7 +56,11 @@ const AppNavigationStack = () => {
         <appHomeStack.Navigator headerMode="none" screenOptions={()=>({headerShown:false})}>
             <appHomeStack.Screen name="Home" component={Home} />
             <appHomeStack.Screen name="Detail" component={Detail} />
-            <appHomeStack.Screen name="Profile" component={Dashboard} />
+            <appHomeStack.Screen name="Profile" component={Profile} />
+            <appHomeStack.Screen name="EditProfile" component={EditProfileScreen} />
+            <appHomeStack.Screen name="Appointment" component={Appointment} />
+            <appHomeStack.Screen name="Post" component={Post} />
+            <appHomeStack.Screen name="Createblog" component={CreateBlog} />
         </appHomeStack.Navigator>
     );
 }
@@ -87,20 +95,12 @@ const AppNavigation = () => {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  top: 10,
                 }}
               >
-              <Image source={require("../assets/doc.png")}
-                resizeMode="contain"
-                style={{
-                  width:40,
-                  height:40,
-                  tintColor:focused?'#246EE9':'#FF2400',
-                }}
-              />
+                <FontAwesome name="user-md" size={35} color={focused ? "#FF2400" : "#247BA0"} />
                 <Text
                   style={{
-                    color: focused ? "#246EE9" : "#FF2400",
+                    color: focused ? "#FF2400" : "#247BA0",
                     fontSize: 12,
                   }}
                 >
@@ -110,48 +110,33 @@ const AppNavigation = () => {
             ),
           }}
         />
-        <Tab.Screen name="Home" component={Home}
+        <Tab.Screen name="Post" component={Post}
         options={{
           tabBarIcon: ({ focused }) => (  
-            <Image source={require("../assets/more.png")}
-              resizeMode="contain"
-              style={{
-                width:30,
-                height:30,
-                tintColor:'#fff',
-              }}
-            />
+            <FontAwesome name="plus" size={35}  color={focused ? "yellow" : "#ffff"} />
           ),
           tabBarButton:(props)=>(
             <CustomTabBarButton {...props}/>
           )
         }}/>
-        <Tab.Screen name="Post" component={Post} 
+        <Tab.Screen name="Profile" component={Profile} 
         options={{
           tabBarIcon: ({ focused }) => (
             <View
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                top: 10,
               }}
             >
-            <Image source={require("../assets/user.png")}
-              resizeMode="contain"
-              style={{
-                width:30,
-                height:30,
-                tintColor:focused?'#246EE9':'#FF2400',
-              }}
-            />
-              <Text
-                style={{
-                  color:focused?'#246EE9':'#FF2400',
-                  fontSize: 12,
-                }}
-              >
-                Profile
-              </Text>
+           <FontAwesome name="user" size={35} color={focused ? "#FF2400" : "#247BA0"} />
+                <Text
+                  style={{
+                    color: focused ? "#FF2400" : "#247BA0",
+                    fontSize: 12,
+                  }}
+                >
+                 Profile
+                </Text>
             </View>
           ),
         }}/>

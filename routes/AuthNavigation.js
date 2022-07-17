@@ -4,12 +4,14 @@ import React from 'react'
 import Login from '../auth/Login';
 import Register from '../auth/Register';
 import { AuthContext } from '../components/context';
+import Splash from '../screen/Splash';
 
 const RootStack = createNativeStackNavigator();
 
 const AuthNavigation = () => {
   return (
     <RootStack.Navigator headerMode="none" screenOptions={()=>({headerShown:false})}>
+    <RootStack.Screen name="Splash" component={Splash} />
     <RootStack.Screen name="Login" component={Login} />
     <RootStack.Screen name="Register" component={Register} />
     </RootStack.Navigator>

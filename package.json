@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "start": "PORT=8000 react-scripts start"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^5.11.15",
@@ -19,9 +19,13 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
+    "react-native-date-picker": "^4.2.2",
+    "react-native-datepicker": "^1.7.2",
+    "react-native-image-picker": "^4.8.4",
+    "react-native-paper": "^4.12.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "~3.10.1",
-    "react-native-vector-icons": "^9.0.0",
+    "react-native-vector-icons": "^9.1.0",
     "react-native-web": "0.17.1"
   },
   "devDependencies": {
