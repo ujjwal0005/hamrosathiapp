@@ -17,10 +17,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 export default function Login() {
-  const navigation = useNavigation();
-  const [username, setUsername] = useState("sujeet92@gmail.com");
-  const [password, setPassword] = useState("ujjwal123@");
   const {signIn} = React.useContext(AuthContext);
+  const navigation = useNavigation();
+  // const [username, setUsername] = useState('');
+  // const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('ujjwalsapkota005@gmail.com');
+  const [password, setPassword] = useState('ujjwal123@');
 
 
   return (

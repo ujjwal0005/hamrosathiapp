@@ -1,10 +1,15 @@
 import { StyleSheet,Text,ScrollView,TouchableOpacity, View,Image,TextInput } from 'react-native'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import React, { useState } from "react";
+import { AuthContext } from "../components/context";
+import {createblog} from '../api/DatApi'
 
 
 const CreateBlog = () => {
+    const {authToken} = React.useContext(AuthContext);
     const image = require("../assets/doc.jpeg");
+    const [title, setTitle] = useState('This is blog');
+    const [content, setContent] = useState('blong numberskjdfhsjhdsjkhdsjkh');
     const [blogimage, setblogimage] = useState();
     const opengallery = async() =>{
         const result = await launchImageLibrary({mediaType:'photo',quality:0.01});
@@ -28,6 +33,8 @@ const CreateBlog = () => {
             style={styles.textin}
               placeholder="Write your title here"
               placeholderTextColor="black"
+              value={title}
+              onChangeText={(title) => setTitle(title)}
              />
         </View>
         <View style={styles.title}>
@@ -38,6 +45,8 @@ const CreateBlog = () => {
             style={styles.textin}
               placeholder="Write your blog here"
               placeholderTextColor="black"
+              value={content}
+              onChangeText={(content) => setContent(content)}
              />
         </View>
         <View style={styles.title}>
@@ -59,7 +68,7 @@ const CreateBlog = () => {
             
         </View>
         <View style={styles.title}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress = {()=> createblog(title,content.image)}>
                 <View style={styles.submit}>
                     <Text style={styles.bidbuttontext}>Submit Now</Text>
                 </View>

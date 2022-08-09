@@ -24,6 +24,24 @@ export default function Home() {
       availabe_time: "10am - 5am",
       src: image,
     },
+    {
+      name : "Dr. Vishal Shrestha",
+      experience : "Psychologist",
+      availabe_time: "10am - 5am",
+      src: image,
+    },
+    {
+      name : "Dr. Vishal Shrestha",
+      experience : "Psychologist",
+      availabe_time: "10am - 5am",
+      src: image,
+    },
+    {
+      name : "Dr. Vishal Shrestha",
+      experience : "Psychologist",
+      availabe_time: "10am - 5am",
+      src: image,
+    },
 
   ]);
 
@@ -64,6 +82,9 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  itemcard:{
+    paddingBottom:90,
   },
   bidbuttontext:{
       color:"#247BA0"

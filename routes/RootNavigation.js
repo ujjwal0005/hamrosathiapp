@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,ActivityIndicator} from 'react-native'
-import React, { useEffect} from 'react'
+import React, { useEffect, useState} from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import AuthNavigation from './AuthNavigation';
 import { AuthContext } from '../components/context'
@@ -12,48 +12,57 @@ const RootNavigation = () => {
       const[userToken,setUserToken] = React.useState(null);  
       const [responseMsg, setResponseMsg] = React.useState("");
       const [dialogVisible, setDialogVisible] = React.useState(false);
+      const [userData, setUserData] = useState([]);
 
       const authContext = React.useMemo(() => ({
+        userData:userData,
+          authToken: userToken,
           signIn: async(username,password) => { 
             console.log(username,password)
             try {
               const res = await handleLogin(username,password);
+              console.log(res)
               console.log(username,password,res.status)
-              setUserToken('fgkj')
+              // setUserToken('fgkj')
               setIsLoading(false);
-              // if (res.status == 200) {
-              //   if (res.data.token) {
-              //     setUserToken(res.data.token);
-              //     Alert.alert('Logged In','Successfully')
-              //     setResponseMsg("Logged in successfully!");			
-              //   } else {
-              //     console.log('res.message1231',res.data.message)
-              //     setResponseMsg(res.data.message);
-              //     setDialogVisible(true);
-              //   }
-              // } else if (res.status == "failed") {
-              //   console.log('res.message',res.message)
-              //   Alert.alert('Data Incorrect')
-              //   setResponseMsg(res.message);
-              //   setDialogVisible(true);
-              // }
+              if (res.status == 200) {
+                if (res.data.token) {
+                  setUserData(res.data)
+                  setUserToken(res.data.token);
+                  Alert.alert('Logged In','Successfully')
+                  setResponseMsg("Logged in successfully!");			
+                } else {
+                  console.log('res.message1231',res.data.message)
+                  setResponseMsg(res.data.message);
+                  setDialogVisible(true);
+                }
+              } else if (res.status == "failed") {
+                console.log('res.message',res.message)
+                Alert.alert('Data Incorrect')
+                setResponseMsg(res.message);
+                setDialogVisible(true);
+              }
             } catch (error) {
               console.log("error aayo",error)
             }
           },
           signOut: () => {
-            setUserToken(null)
+            setUserToken(null);
+            setUserData(null)
             setIsLoading(false);
         },
-        signUp: async(name,email,number,confirm_password,gender,dob,password) => { 
+        signUp: async(name,email,number,password,confirm_password,gender,dob,is_doctor) => { 
           try {
-            const res = await handleRegister(name,email,number,confirm_password,gender,dob,password);
-            console.log(res)
+            const res = await handleRegister(name,email,number,password,confirm_password,gender,dob,is_doctor);
+            if (res.data) {
+              setUserToken(res.data.token);
+             setUserData(res.data)
+            } 
             
           } catch (error) {
             console.log("error aayo",error)
           }
-          setUserToken('fgkj')
+          // setUserToken('fgkj')
           setIsLoading(false);
         },
       }));
@@ -75,7 +84,7 @@ const RootNavigation = () => {
   return (  
       <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-      { userToken != null ?  <AppNavigation /> : <AuthNavigation/> }
+      { userData?.token? userData.token != null ?  <AppNavigation /> : <AuthNavigation/>: <AuthNavigation/> }
       </NavigationContainer>
     </AuthContext.Provider>
      

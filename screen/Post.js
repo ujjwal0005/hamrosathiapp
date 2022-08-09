@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Image,
   StyleSheet,
@@ -12,24 +12,32 @@ import {
 import { Title} from 'react-native-paper'
 import { AuthContext } from '../components/context';
 import { useNavigation } from "@react-navigation/native";
-
+import {blogs} from '../api/DatApi'
 export default function Post() {
   const navigation = useNavigation();
-  const {signOut} = React.useContext(AuthContext);
+  const {authToken, signOut} = React.useContext(AuthContext);
   const back = { uri: "../assets/logo.png" };
   const image = require("../assets/doc.jpeg");
-  const [Items, setItems] = useState([
-    {
-      name : "Dr. Vishal Shrestha",
-      experience : "Psychologist",
-      availabe_time: "10am - 5am",
-      src: image,
-    },
-
-  ]);
-
   const [Refreshing, setRefreshing] = useState(false);
-
+  const [isLoading,setLoading] = useState(true)
+  const [blogdata,setblogdata] = useState({
+  })
+  
+  const getblogs = async() => {
+  try {
+    const {data , status } = await blogs(authToken);
+    console.log('dhdhdh:::::',data)
+    setblogdata(data)
+    setLoading(false)   
+  } catch (error) {
+    console.log('error::', error)
+    setLoading(false)
+  }
+}
+  useEffect(() => {
+    getblogs();
+  }, [])
+  
   return (
     <View style={styles.container}>
     <View>
@@ -42,7 +50,7 @@ export default function Post() {
     <View style={styles.itemcard}>
       <FlatList
         keyExtractor={(item, index) => index.toString()}
-        data={Items}
+        data={blogdata}
         style={styles.body}
         refreshControl={
           <RefreshControl refreshing={Refreshing} colors={["#8dbafe"]} />
@@ -52,15 +60,13 @@ export default function Post() {
             <View style={styles.carditem}>
               <Image style={styles.image} source={item.src} />
               <View>
-                <Title style={styles.title}>Title Name</Title>
+                <Title style={styles.title}>{item.title}</Title>
                 <View style={styles.para}>
-                <Text style={styles.paratext}>They may go by different labels—About, Story, 
-                Mission—but these types of pages generally serve the same key purpose: to be the page for a brand to say,
-                When a visitor wants to learn more about you or your business, the About page is the page they’ll look for. “This is who we are.”</Text>
+                <Text style={styles.paratext}>{item.content}</Text>
                 </View>
                 <TouchableOpacity
                   style={styles.bidbutton}
-                  onPress = {() => navigation.navigate('Appointment')}
+                  onPress = {() => getblogs()}
                 >
                   <Text style={styles.bidbuttontext}>Read More.....</Text>
                 </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   ImageBackground,
   Image,
@@ -25,7 +25,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CreateBlog from "../screen/CreateBlog";
-
+import EditDoctorProfile from "../screen/EditDoctorProfile";
+import { AuthContext } from '../components/context';
 
 const Tab = createBottomTabNavigator();
 const appHomeStack = createNativeStackNavigator();
@@ -52,12 +53,28 @@ const CustomTabBarButton = ({children,onPress}) =>(
 );
 
 const AppNavigationStack = () => {
+  const {userData} = React.useContext(AuthContext);
+   console.log('data::', userData.is_doctor);
+    let initialRoute;
+    if(userData){
+      if(userData.is_doctor === true) {
+        initialRoute = "DoctorProfile"
+      }else if(userData.is_doctor ===false){
+        initialRoute = "EditProfile";
+      }else{
+        initialRoute = "Home";
+      }
+    }
+  
+   
+
     return (
-        <appHomeStack.Navigator headerMode="none" screenOptions={()=>({headerShown:false})}>
-            <appHomeStack.Screen name="Home" component={Home} />
+        <appHomeStack.Navigator headerMode="none" screenOptions={()=>({headerShown:false})} initialRouteName={initialRoute}>
+            <appHomeStack.Screen name="Home" component={Home}  />
             <appHomeStack.Screen name="Detail" component={Detail} />
             <appHomeStack.Screen name="Profile" component={Profile} />
             <appHomeStack.Screen name="EditProfile" component={EditProfileScreen} />
+            <appHomeStack.Screen name="DoctorProfile" component={EditDoctorProfile} />
             <appHomeStack.Screen name="Appointment" component={Appointment} />
             <appHomeStack.Screen name="Post" component={Post} />
             <appHomeStack.Screen name="Createblog" component={CreateBlog} />

@@ -64,8 +64,8 @@ const EditProfileScreen = () => {
           <TextInput style={styles.textInput} keyboardType="email-address" placeholder="Email"
           autoCorrect={false}
           placeholderTextColor="#666666" />
-
           </View>
+          
 
   
           <View style={styles.action}>
@@ -73,7 +73,6 @@ const EditProfileScreen = () => {
           <TextInput style={styles.textInput} placeholder="Country"
           autoCorrect={false}
           placeholderTextColor="#666666" />
-
           </View>
 
           <View style={styles.action}>

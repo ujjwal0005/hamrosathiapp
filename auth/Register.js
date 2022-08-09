@@ -1,4 +1,4 @@
-import { StatusBar } from "react-native";
+import { ScrollView, StatusBar } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -21,15 +21,16 @@ export default function Register() {
   const {signUp} = React.useContext(AuthContext);
   const navigation = useNavigation();
   const back = { uri: "../assets/logo.png" };
-  const [number, setPhonenumber] = useState("9861336907");
-  const [password, setPassword] = useState("ujjwal123@");
-  const [confirm_password, setConfirm_password] = useState("ujjwal123@");
-  const [email, setEmail] = useState("ujjwal123@gmail.com");
-  const [gender, setGender] = useState("male");
-  const [name, setName] = useState("Ujjwal Sapkota");
-  const [dob, setDob] = useState("2055/10/05");
+  const [number, setPhonenumber] = useState('9861000000');
+  const [password, setPassword] = useState('admin123@');
+  const [confirm_password, setConfirm_password] = useState('admin123@');
+  const [email, setEmail] = useState('janak@gmail.com');
+  const [gender, setGender] = useState('male');
+  const [name, setName] = useState('janak');
+  const [dob, setDob] = useState('1999-10-10');
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.inputView}>
@@ -99,7 +100,7 @@ export default function Register() {
           <TextInput
             style={styles.textInput}
             value={dob}
-            placeholder="Date of Birth"
+            placeholder="YYYY-MM-DD"
             placeholderTextColor="black"
             onChangeText={(val) => setDob(val)}
           />
@@ -107,15 +108,28 @@ export default function Register() {
 
         <TouchableOpacity
           style={styles.loginBtn}
+          onPress = {()=> signUp(name,email,number,password,confirm_password,gender,dob,false)}
+        >
+          <Text style={styles.registerText}>Sign Up as User</Text>
+        </TouchableOpacity> 
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress = {()=> signUp(name,email,number,password,confirm_password,gender,dob,true)}
+        >
+          <Text style={styles.registerText}>Sign Up as Doctor</Text>
+        </TouchableOpacity> 
+        {/* <TouchableOpacity
+          style={styles.loginBtn}
           onPress = {()=> signUp(name,password,confirm_password,email,number,gender,dob)}
         >
           <Text style={styles.registerText}>Register Here</Text>
-        </TouchableOpacity> 
+        </TouchableOpacity>  */}
 
          <TouchableOpacity style={styles.loginText} onPress = {() => navigation.navigate('Login')}>
           <Text style={styles.loginText}>Sign In</Text>
         </TouchableOpacity>
     </View>
+    </ScrollView>
   );
 }
 

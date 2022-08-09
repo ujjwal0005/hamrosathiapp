@@ -1,16 +1,41 @@
-import { StyleSheet, View,SafeAreaView,TouchableOpacity} from 'react-native'
-import React from 'react'
+import { StyleSheet, View,SafeAreaView,TouchableOpacity,ActivityIndicator} from 'react-native'
+import React, {useEffect, useState} from 'react'
 import { Avatar,Title,Caption,Text } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from '../components/context'
-
+import { userprofile } from '../api/Auth';
 export default function Profile(){
   const navigation = useNavigation();
-  const {signOut} = React.useContext(AuthContext);
+  const [isLoading,setLoading] = useState(true)
+  const [profiledata,setprofiledata] = useState({
+
+  })
+  
+  const {authToken,signOut} = React.useContext(AuthContext);
+  const getProfile = async() => {
+  try {
+    const {data , status } = await userprofile(authToken);
+    console.log('dhdhdh:::::',data)
+    setprofiledata(data)
+    setLoading(false)
+    
+  } catch (error) {
+    console.log('error::', error)
+    setLoading(false)
+  }
+}
+
+
+  useEffect(() => {
+    getProfile();
+  }, [])
+  
 
   return (
     <SafeAreaView style={styles.container}>
+       {isLoading? <ActivityIndicator size="small" color="#0000ff" />:
+       <>
         <View style={styles.userInfoSection}>
             <View style={{ flexDirection: 'row',marginTop: 15 }}>
                 <Avatar.Image
@@ -18,8 +43,8 @@ export default function Profile(){
                     size={80}
                 />
             <View style={{ marginLeft: 20 }}>
-                <Title style={[styles.title, {marginTop:15,marginBottom:5}]}>User Name</Title>
-                  <TouchableOpacity  onPress = {() => navigation.navigate('EditProfile')}>
+                <Title style={[styles.title, {marginTop:15,marginBottom:5}]}>{profiledata.name}</Title>
+                  <TouchableOpacity  onPress = {() => navigation.navigate('DoctorProfile')}>
           <View style={styles.menuhead}>
             <Icon name="pen" style={styles.icon} size={25}/>
             <Text style={styles.menuheadtext}>Edit Profile</Text>
@@ -44,11 +69,11 @@ export default function Profile(){
         </View>
         <View style={styles.row}>
           <Icon name="phone" style={styles.icon} size={20}/>
-          <Text  style={styles.userdetails}>+977-9861336901</Text>
+          <Text  style={styles.userdetails}>{profiledata.number}</Text>
         </View>
         <View style={styles.row}>
           <Icon name="email" style={styles.icon} size={20}/>
-          <Text  style={styles.userdetails}>ujjwalsapkot@email.com</Text>
+          <Text  style={styles.userdetails}>{profiledata.email}</Text>
         </View>
       </View>
 
@@ -89,6 +114,7 @@ export default function Profile(){
           </View>
         </TouchableOpacity>
       </View>
+      </>}
     </SafeAreaView> 
   )
 }
