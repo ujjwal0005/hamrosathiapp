@@ -1,16 +1,75 @@
-import React from 'react'
-import { StyleSheet,TouchableOpacity,ImageBackground,TextInput, Text, View,ScrollView } from 'react-native'
+import React, {useEffect, useState} from 'react'
+import { StyleSheet,TouchableOpacity,ImageBackground,TextInput, Text, View,ScrollView,ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from "@react-navigation/native";
 import Feather from 'react-native-vector-icons/Feather';
-
+import { AuthContext } from '../components/context'
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { userprofile } from '../api/Auth';
+import { editdoctor } from '../api/Auth';
 const EditDoctorProfile = () => {
+  const navigation = useNavigation();
+  const [isLoading,setLoading] = useState(false)
+  const [profiledata,setprofiledata] = useState({
+
+  })
+  const [phonenumber, setPhonenumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const[experience, setExperience] =  useState('');
+  const[education, setEducation] = useState('');
+
+  const {authToken,signOut} = React.useContext(AuthContext);
+  const getProfile = async() => {
+  try {
+    setLoading(true)
+    const {data , status } = await userprofile(authToken);
+    setprofiledata(data);
+    setPhonenumber(data.number);
+    setName(data.name);
+    setEmail(data.email)
+    setLoading(false)  
+  } catch (error) {
+    console.log('error::', error)
+    setLoading(false)
+  }
+}
+  useEffect(() => {
+    getProfile();
+  }, [])
+
+  const doctoredit = async() => {
+    try {
+      setLoading(true)
+      const {data , status} = await editdoctor(name,email,phonenumber,experience,education,blogimage,authToken);
+      console.log(data);
+      setLoading(false)  
+    } catch (error) {
+      console.log('error::', error)
+      setLoading(false)
+    }
+  }
+
+const [blogimage, setblogimage] = useState();
+const opengallery = async() =>{
+      const result = await launchImageLibrary({mediaType:'photo',quality:0.01});
+      if(!result.didCancel){
+      result.assets.map(({uri})=>{
+      setblogimage(uri);
+    })
+  }
+}
+
+
     return (
         <ScrollView>
+          {isLoading? <ActivityIndicator size="small" color="#0000ff" />:
+          <>
         <View style={styles.container}>
           <View style={{margin:20}}>
             <View style={{alignItems:'center'}}>
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={opengallery}>
                   <View style ={{
                     height: 100,
                     width: 100,
@@ -18,7 +77,8 @@ const EditDoctorProfile = () => {
                     justifyContent:'center',
                     alignItems:'center',
                   }}>
-                    <ImageBackground source={require('../assets/doc.jpeg')} style={{height: 100,width:100}} imageStyle={{borderRadius:15}}>
+                    <ImageBackground source={{uri:blogimage}} style={{height: 100,width:100}}
+                     imageStyle={{borderRadius:15}}>
                         <View style={{
                           flex:1,
                           justifyContent:'center',
@@ -43,21 +103,20 @@ const EditDoctorProfile = () => {
               <FontAwesome name="user-o" size={20} color="#000" />
               <TextInput style={styles.textInput} placeholder="First Name"
               autoCorrect={false}
-              placeholderTextColor="#666666" />
-    
+              placeholderTextColor="#666666" 
+              value={name}
+              onChangeText={(name) => setName(name)}
+              />
+
               </View>
-              <View style={styles.action}>
-              <FontAwesome name="user-o" size={20} color="#000" />
-              <TextInput style={styles.textInput} placeholder="Last Name"
-              autoCorrect={false}
-              placeholderTextColor="#666666" />
-    
-              </View>
+        
               <View style={styles.action}>
               <Feather name="phone" size={20} color="#000" />
               <TextInput style={styles.textInput} 
               keyboardType="number-pad" placeholder="Phone Number"
               autoCorrect={false}
+              value={phonenumber}
+              onChangeText={(number) => setPhonenumber(number)}
               placeholderTextColor="#666666" />
     
               </View>
@@ -65,46 +124,37 @@ const EditDoctorProfile = () => {
               <FontAwesome name="envelope-o" size={20} color="#000" />
               <TextInput style={styles.textInput} keyboardType="email-address" placeholder="Email"
               autoCorrect={false}
-              placeholderTextColor="#666666" />
-    
+              placeholderTextColor="#666666" 
+              value={email}
+              onChangeText={(email) => setEmail(email)}
+              />
               </View>
     
-      
               <View style={styles.action}>
               <FontAwesome name="globe" size={20} color="#000" />
               <TextInput style={styles.textInput} placeholder="Experience"
               autoCorrect={false}
-              placeholderTextColor="#666666" />
+              placeholderTextColor="#666666"
+              value={experience}
+              onChangeText={(experience) => setExperience(experience)}
+              />
               </View>
 
-              <View style={styles.action}>
-              <FontAwesome name="globe" size={20} color="#000" />
-              <TextInput style={styles.textInput} placeholder="Country"
-              autoCorrect={false}
-              placeholderTextColor="#666666" />
-
-              </View>
               <View style={styles.action}>
               <FontAwesome name="globe" size={20} color="#000" />
               <TextInput style={styles.textInput} placeholder="Education"
               autoCorrect={false}
-              placeholderTextColor="#666666" />
+              placeholderTextColor="#666666"
+              value={education}
+              onChangeText={(education) => setEducation(education)} />
               </View>
-    
-              <View style={styles.action}>
-              <Icon name="map-marker-outline" size={20} color="#000" />
-              <TextInput style={styles.textInput} placeholder="City"
-              autoCorrect={false}
-              placeholderTextColor="#666666" />
-              </View>
-    
-              <TouchableOpacity style={styles.commandButton} onPress={()=>{}}>
+              <TouchableOpacity style={styles.commandButton}  onPress = {()=> doctoredit()}>
                         <Text style={styles.panelButtonTitle}>Submit</Text>
               </TouchableOpacity>
-    
-    
             </View>
         </View>
+        </>
+          }
         </ScrollView>
       )
     }

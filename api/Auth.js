@@ -14,6 +14,7 @@ export const handleLogin = async (username, password) => {
 			},
 		});
 		await AsyncStorage.setItem("Token",data.token) 
+		console.log('logindata',data)
 		return { data, status };
 	} catch (error) {
 		return { status: "failed", message: error.message };
@@ -60,13 +61,13 @@ export const userprofile = async(userToken) =>{
 export const handleRegister = async (name,email,number,password,confirm_password,gender,dob,is_doctor) => {
 	postData={
 		name: name,
-		password: password,
-		password2: confirm_password,
+		password:password,
+		password2:confirm_password,
 		email: email,
 		number: number,
 		gender: gender,
-		dob: dob,
-		is_doctor: is_doctor
+		dob:dob,
+		is_doctor:is_doctor
 	}
 	console.log(postData)
 	try {
@@ -85,3 +86,39 @@ export const handleRegister = async (name,email,number,password,confirm_password
 		};
 	}
 };
+
+export const editdoctor = async (name,email,number,experience,qualification,blogimage,userToken) => {
+	const formdata = new FormData()
+      formdata.append('qualification_certificate',{
+        uri:blogimage,
+        type:'image/jpg',
+        name:blogimage.split("/").pop()
+      })
+	  formdata.append('name',name);
+	  formdata.append('email',email);
+	  formdata.append('number',number);
+	  formdata.append('work_experience',experience);
+	  formdata.append('office_name',qualification);
+	try {
+		const {data,status} = await axios({
+			method: "put",
+			url: `${baseUrl}/doctorprofile/update/`,
+			data: formdata,
+			headers: {
+				"Authorization" : `Token ${userToken}`,
+				"Content-Type" : 'multipart/form-data'	
+			}
+
+		});
+		console.log(data) 
+		return {data,status};
+	} catch (error) {
+		console.log("heoeore", error)
+		return {
+			status: "failed",
+			message: error.message
+		};
+	}
+};
+
+

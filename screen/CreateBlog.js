@@ -1,28 +1,47 @@
-import { StyleSheet,Text,ScrollView,TouchableOpacity, View,Image,TextInput } from 'react-native'
+import { StyleSheet,Text,ScrollView,TouchableOpacity,ActivityIndicator, View,Image,TextInput } from 'react-native'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import React, { useState } from "react";
 import { AuthContext } from "../components/context";
-import {createblog} from '../api/DatApi'
+import {createblog} from '../api/DatApi';
+import { useNavigation } from "@react-navigation/native";
 
 
 const CreateBlog = () => {
     const {authToken} = React.useContext(AuthContext);
+    const [isLoading,setLoading] = useState(false)
     const image = require("../assets/doc.jpeg");
     const [title, setTitle] = useState('This is blog');
     const [content, setContent] = useState('blong numberskjdfhsjhdsjkhdsjkh');
     const [blogimage, setblogimage] = useState();
+    const navigation = useNavigation();
     const opengallery = async() =>{
         const result = await launchImageLibrary({mediaType:'photo',quality:0.01});
         console.log(result);
         if(!result.didCancel){
-			result.assets.map(({uri})=>{
+			    result.assets.map(({uri})=>{
                 setblogimage(uri);
 			})
 		}
     }
+    const blogcreate = async() => {
+        try {
+          setLoading(true)
+          const {data , status} = await createblog(title,content,blogimage,authToken);
+          console.log(data);
+          if (data){
+            navigation.navigate('Post')
+          }
+          setLoading(false)  
+        } catch (error) {
+          console.log('error::', error)
+          setLoading(false)
+        }
+      }
   return (
       <View style={styles.container}>
         <ScrollView style={{marginBottom:120}}>
+        {isLoading? <ActivityIndicator size="small" color="#0000ff" />:
+          <>
            
             <Text style={styles.here}>
                 Write Your thoughts Here?
@@ -68,12 +87,14 @@ const CreateBlog = () => {
             
         </View>
         <View style={styles.title}>
-            <TouchableOpacity onPress = {()=> createblog(title,content.image)}>
+            <TouchableOpacity onPress = {()=> blogcreate()}>
                 <View style={styles.submit}>
                     <Text style={styles.bidbuttontext}>Submit Now</Text>
                 </View>
              </TouchableOpacity>
         </View>
+        </>
+          }
         </ScrollView>
     </View>
   )

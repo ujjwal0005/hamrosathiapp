@@ -1,19 +1,9 @@
-import { StatusBar } from "expo-status-bar";
 import React, {useEffect, useState} from "react";
 import {
-  ImageBackground,
-  Image,
   StyleSheet,
-  ScrollView,
-  Button,
-  Linking,
-  FlatList,
   Text,
-  TextInput,
-  SectionList,
   View,
   TouchableOpacity,
-  RefreshControl,
 } from "react-native";
 import Home from "../screen/Home";
 import Detail from "../screen/Detail";
@@ -27,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CreateBlog from "../screen/CreateBlog";
 import EditDoctorProfile from "../screen/EditDoctorProfile";
 import { AuthContext } from '../components/context';
+import DoctorDetails from "../screen/DoctorDetails";
 
 const Tab = createBottomTabNavigator();
 const appHomeStack = createNativeStackNavigator();
@@ -75,6 +66,7 @@ const AppNavigationStack = () => {
             <appHomeStack.Screen name="Profile" component={Profile} />
             <appHomeStack.Screen name="EditProfile" component={EditProfileScreen} />
             <appHomeStack.Screen name="DoctorProfile" component={EditDoctorProfile} />
+            <appHomeStack.Screen name="DoctorDetails" component={DoctorDetails} />
             <appHomeStack.Screen name="Appointment" component={Appointment} />
             <appHomeStack.Screen name="Post" component={Post} />
             <appHomeStack.Screen name="Createblog" component={CreateBlog} />

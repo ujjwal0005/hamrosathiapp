@@ -1,5 +1,5 @@
-import { StatusBar } from "react-native";
-import React, { useState } from "react";
+import { ActivityIndicator} from "react-native";
+import React, { useEffect,useState } from "react";
 import {
   Button,
   Image,
@@ -12,13 +12,17 @@ import {
   RefreshControl,
 } from "react-native";
 import DatePicker from 'react-native-date-picker'
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,useRoute } from "@react-navigation/native";
 import { AuthContext } from "../components/context";
-import { Title } from 'react-native-paper';
+import { Title,Avatar } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { getdoctor } from '../api/DatApi';
+import { bookappointment } from "../api/DatApi";
+
 const Appointment = () => {
   const navigation = useNavigation();
-  const {signOut} = React.useContext(AuthContext);
+  const {authToken,signOut,userData} = React.useContext(AuthContext);
   const [Refreshing, setRefreshing] = useState(false);
   const back = { uri: "../assets/logo.png" };
   const image = require("../assets/doc.jpeg");
@@ -31,42 +35,84 @@ const Appointment = () => {
       src: image,
     },
   ]);
-
+  const route = useRoute();
+  const {id} = route.params;
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
 
+  const [isLoading,setLoading] = useState(true)
+  const [profiledata,setprofiledata] = useState()
+  const [starttime,setStartTime] = useState()
+  const[endtime,setendTime]=useState()
+  
+
+  const doctordataget = async() => {
+    try {
+      console.log(authToken,id)
+      const {data , status } = await getdoctor(authToken,id);
+      console.log('dhdhdh:::::',data)
+      setprofiledata(data)
+      setLoading(false)
+      
+    } catch (error) {
+      console.log('error::', error)
+      setLoading(false)
+    }
+  }
+  
+  
+    useEffect(() => {
+      doctordataget();
+    }, [])
+
+
+    const appointementcreate = async() => {
+     const dd = (`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`)
+      try {
+        setLoading(true)
+        const {data , status} = await bookappointment(authToken,user=userData.id,dd,starttime,endtime,doctor=id);
+        if (data){
+          navigation.navigate('Detail')
+        }
+        setLoading(false)  
+      } catch (error) {
+        console.log('error::', error)
+        setLoading(false)
+      }
+    }
   return (
+
     <View style={styles.container}>
+      { profiledata? (
         <View style={styles.itemcard}>
-          <FlatList
-            keyExtractor={(item, index) => index.toString()}
-            data={Items}
-            style={styles.body}
-            refreshControl={
-              <RefreshControl refreshing={Refreshing} colors={["#8dbafe"]} />
-            }
-            renderItem={({ item }) => (
-              <View style={styles.card}>
-                <View style={{width:"95%"}}>
-                <View style={styles.carditem}>
-                  <Image style={styles.image} source={item.src} />
-                  <View>
-                    <Title style={styles.title}>Doctor Name</Title>
-                    <Text style={styles.text}>{item.experience}</Text>
-                    <View style={styles.phone}>
-                    <FontAwesome name="phone" size={20} style={styles.icon} />
-                    <Text>{item.phone}</Text>
-                    </View>
-                  </View>
-                </View>
+          <View style={styles.userInfoSection}>
+            <View style={{ flexDirection: 'row',marginTop: 15 }}>
+            <Image style={styles.image} source={require('../assets/doc.jpeg')}/>
+            <View style={{ marginLeft: 5 }}>
+              <View style={styles.userInfoSection}>
+              <Title style={[styles.title]}>{profiledata.name}</Title>
+              <View style={styles.row}>
+                <Icon name="phone" style={styles.icon} size={20}/>
+                <Text  style={styles.userdetails}>{profiledata.number}</Text>
+              </View>
+              <View style={styles.row}>
+                <Icon name="email" style={styles.icon} size={20}/>
+                <Text  style={styles.userdetails}>{profiledata.email}</Text>
+              </View>
+            </View> 
+            </View>
+            </View>
+        </View>
+
+              <View style={styles.card}> 
                 <View style={styles.data}>
                   <View style={styles.inputView}>
-                    <Text style={styles.exp}>Expericen Years</Text>
-                    <Text style={styles.tex} >25 yrs</Text>
+                    <Text style={styles.exp}>Qualification</Text>
+                    <Text style={styles.tex} >{profiledata.doctor_profile.college_passed_outdate}</Text>
                   </View>
                   <View style={[styles.inputView,{marginBottom:30}]}>
-                    <Text style={[styles.exp,{marginTop:0}]}>Qualification</Text>
-                    <Text style={styles.tex}>Degree Phd in Mbbs</Text>
+                    <Text style={[styles.exp,{marginTop:0}]}>Work Experience</Text>
+                    <Text style={styles.tex}>{profiledata.doctor_profile.work_experience}</Text>
                   </View>
                 </View>
                 <View style={styles.bookappoint}>
@@ -74,50 +120,77 @@ const Appointment = () => {
                     <DatePicker
                         mode="date"
                         style={{height:50,alignSelf:"center"}}
-                        date={date}                  
+                        date={date}
+                        onDateChange={setDate}                  
                       />
                       <View style={styles.available}>
                          
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={()=> {
+                        setStartTime('6:00');
+                        setendTime('7:00');
+                      }}>
                         <View style={styles.bidbutton}>
-                          <Text style={styles.bidbuttontext}>6am - 9am</Text>
+                          <Text style={styles.bidbuttontext
+                          
+                          }>6am - 7am</Text>
                         </View>
                         </TouchableOpacity>
                          
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={()=> {
+                          setStartTime('8:00');
+                          setendTime('9:00');
+                        }}>
                         <View style={styles.bidbutton}>
-                          <Text style={styles.bidbuttontext}>6am - 9am</Text>
+                          <Text style={styles.bidbuttontext}>8am - 9am</Text>
                         </View>
                         </TouchableOpacity>
                           
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=> {
+                          setStartTime('9:00');
+                          setendTime('10:00');
+                        }}>
                         <View style={styles.bidbutton}>
-                          <Text style={styles.bidbuttontext}>6am - 9am</Text>
+                          <Text style={styles.bidbuttontext}>9am - 10am</Text>
                         </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                         onPress={()=> {
+                          setStartTime('16:00');
+                          setendTime('17:00');
+                        }}>
                         <View style={styles.bidbutton}>
-                          <Text style={styles.bidbuttontext}>6am - 9am</Text>
+                          <Text style={styles.bidbuttontext}>4pm - 5pm</Text>
                         </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                         onPress={()=> {
+                          setStartTime('17:00');
+                          setendTime('18:00');
+                        }}>
                         <View style={styles.bidbutton}>
-                          <Text style={styles.bidbuttontext}>6am - 9am</Text>
+                          <Text style={styles.bidbuttontext}>5pm - 6pm</Text>
+                        </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                         onPress={()=> {
+                          setStartTime('18:00');
+                          setendTime('19:00');
+                        }}>
+                        <View style={styles.bidbutton}>
+                          <Text style={styles.bidbuttontext}>6pm - 7pm</Text>
                         </View>
                         </TouchableOpacity>
                       </View>
                     </View>
                   </View>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress = {()=> appointementcreate()}>
                   <View style={styles.bookappointmnet}>
                         <Text style={styles.boonwo}>Create Appointment</Text>
                   </View>
                   </TouchableOpacity>
               </View>
-              
-            )}
-          />
-        </View>
+        ): null}
     </View>
   );
 }
@@ -147,9 +220,7 @@ const styles = StyleSheet.create({
   exp:{
     marginBottom:5,
   },
-  data:{
-    marginTop:10,
-  },
+
   tex:{
     color:"#247BA0",
   },
@@ -240,11 +311,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
   },
-  title:{
-    marginLeft: 20,
-    marginRight: 20,
-    color:"#247BA0",
-  },
   phone:{
     marginTop:20,
     marginRight: 20,
@@ -263,5 +329,73 @@ const styles = StyleSheet.create({
     width: 160,
     height: 80,
     aspectRatio: 1,
+  },
+  wallet:{
+    color:"black",
+  },
+  icon:{
+    color:"black"
+  },
+  userdetails:{
+    color:"black",
+    marginLeft: 20
+  },
+  userInfoSection: {
+    paddingHorizontal: 30,
+  },
+  title: {
+    color: "black",
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  caption: {
+    color: 'yellow',
+    fontSize: 14,
+    lineHeight: 14,
+    fontWeight: '500',
+  },
+  row: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  infoBoxWrapper: {
+    borderBottomColor: '#dddddd',
+    borderBottomWidth: 1,
+    borderTopColor: '#dddddd',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    height: 100,
+  },
+  infoBox: {
+    width: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRightColor:'#dddddd',
+    borderRightWidth:1
+  },
+  menuWrapper: {
+    marginTop: 10,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+  },
+  menuhead: {
+    flexDirection: 'row',
+  },
+  menuheadtext: {
+    color: 'black',
+    marginLeft: 5,
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 26,
+  },
+  menuItemText: {
+    color: 'black',
+    marginLeft: 20,
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 26,
   },
 })

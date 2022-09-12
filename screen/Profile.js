@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from '../components/context'
 import { userprofile } from '../api/Auth';
+
+
 export default function Profile(){
   const navigation = useNavigation();
   const [isLoading,setLoading] = useState(true)
@@ -12,7 +14,7 @@ export default function Profile(){
 
   })
   
-  const {authToken,signOut} = React.useContext(AuthContext);
+  const {authToken,signOut,userData} = React.useContext(AuthContext);
   const getProfile = async() => {
   try {
     const {data , status } = await userprofile(authToken);
@@ -30,7 +32,6 @@ export default function Profile(){
   useEffect(() => {
     getProfile();
   }, [])
-  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,17 +40,28 @@ export default function Profile(){
         <View style={styles.userInfoSection}>
             <View style={{ flexDirection: 'row',marginTop: 15 }}>
                 <Avatar.Image
-                    source={require('../assets/sath.png')}
+                    source={require('../assets/doc.jpeg')}
                     size={80}
                 />
             <View style={{ marginLeft: 20 }}>
                 <Title style={[styles.title, {marginTop:15,marginBottom:5}]}>{profiledata.name}</Title>
+                {userData.counseller == true ?
                   <TouchableOpacity  onPress = {() => navigation.navigate('DoctorProfile')}>
+                
           <View style={styles.menuhead}>
             <Icon name="pen" style={styles.icon} size={25}/>
             <Text style={styles.menuheadtext}>Edit Profile</Text>
           </View>
         </TouchableOpacity>
+        :
+        <TouchableOpacity  onPress = {() => navigation.navigate('EditProfile')}>
+                
+        <View style={styles.menuhead}>
+          <Icon name="pen" style={styles.icon} size={25}/>
+          <Text style={styles.menuheadtext}>Edit Profile</Text>
+        </View>
+      </TouchableOpacity>
+        }
             </View>
             <View style={{ marginLeft: 100 }}>
                   <TouchableOpacity   style={styles.bidbutton}
@@ -84,17 +96,32 @@ export default function Profile(){
         </View>
         <View style={styles.infoBox}>
             <Title style={styles.wallet}>12</Title>
-            <Caption style={styles.wallet}>Screens</Caption>
+            <Caption style={styles.wallet}>Appointments</Caption>
         </View>
       </View>
 
       <View style={styles.menuWrapper}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress = {() => navigation.navigate('Detail')}>
           <View style={styles.menuItem}>
             <Icon name="heart-outline"  style={styles.icon} size={25}/>
             <Text style={styles.menuItemText}>Your History</Text>
           </View>
         </TouchableOpacity>
+        {userData.counseller == true ?
+        <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails')}>
+          <View style={styles.menuItem}>
+            <Icon name="heart-outline"  style={styles.icon} size={25}/>
+            <Text style={styles.menuItemText}>Your Client History</Text>
+          </View>
+        </TouchableOpacity>
+        :
+        <TouchableOpacity onPress={() => {}}>
+        <View style={styles.menuItem}>
+          <Icon name="rocket" style={styles.icon} size={25}/>
+          <Text style={styles.menuItemText}>Support</Text>
+        </View>
+      </TouchableOpacity>
+        }
         <TouchableOpacity onPress={() => {}}>
           <View style={styles.menuItem}>
             <Icon name="credit-card"style={styles.icon} size={25}/>
@@ -107,12 +134,7 @@ export default function Profile(){
             <Text style={styles.menuItemText}>Tell Your Friends</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.menuItem}>
-            <Icon name="rocket" style={styles.icon} size={25}/>
-            <Text style={styles.menuItemText}>Support</Text>
-          </View>
-        </TouchableOpacity>
+      
       </View>
       </>}
     </SafeAreaView> 

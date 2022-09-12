@@ -16,12 +16,11 @@ import {blogs} from '../api/DatApi'
 export default function Post() {
   const navigation = useNavigation();
   const {authToken, signOut} = React.useContext(AuthContext);
-  const back = { uri: "../assets/logo.png" };
-  const image = require("../assets/doc.jpeg");
   const [Refreshing, setRefreshing] = useState(false);
   const [isLoading,setLoading] = useState(true)
   const [blogdata,setblogdata] = useState({
   })
+  const baseUrl = "https://hamrosath.herokuapp.com";
   
   const getblogs = async() => {
   try {
@@ -37,6 +36,7 @@ export default function Post() {
   useEffect(() => {
     getblogs();
   }, [])
+
   
   return (
     <View style={styles.container}>
@@ -58,7 +58,7 @@ export default function Post() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.carditem}>
-              <Image style={styles.image} source={item.src} />
+              <Image style={styles.image} source ={{uri:baseUrl+item.image}} />
               <View>
                 <Title style={styles.title}>{item.title}</Title>
                 <View style={styles.para}>
@@ -83,6 +83,7 @@ export default function Post() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom:145,
   },
   bookappointmnet:{
     marginTop: 10, 
@@ -152,17 +153,18 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   card: {
-    height: 200,
+    flexBasis: 'auto',
     margin: 10,
-    backgroundColor: "#FFF",
     borderRadius: 10,
-    // justifyContent: "center",
-    // alignItems:"center",
+    shadowColor: 'black',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 4},
+    shadowRadius: 10,
+    elevation: 10,
+    backgroundColor: 'white'
   },
   carditem: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems:"center",
     flexDirection: "row",
   },
   title:{

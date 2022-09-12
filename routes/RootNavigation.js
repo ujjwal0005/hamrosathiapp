@@ -15,7 +15,7 @@ const RootNavigation = () => {
       const [userData, setUserData] = useState([]);
 
       const authContext = React.useMemo(() => ({
-        userData:userData,
+          userData:userData,
           authToken: userToken,
           signIn: async(username,password) => { 
             console.log(username,password)
@@ -27,6 +27,7 @@ const RootNavigation = () => {
               setIsLoading(false);
               if (res.status == 200) {
                 if (res.data.token) {
+                  console.log('logindata;::', res.data)
                   setUserData(res.data)
                   setUserToken(res.data.token);
                   Alert.alert('Logged In','Successfully')

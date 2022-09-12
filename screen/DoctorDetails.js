@@ -21,16 +21,16 @@ import { AuthContext } from '../components/context';
 import { getuserappointment } from "../api/DatApi";
 
 
-export default function Detail() {
+export default function DoctorDetails() {
   const back = { uri: "../assets/logo.png" };
   const image = require("../assets/plub.jpg");
   const [Items, setItems] = useState([
     {
-      // title: "Electrician Needed",
-      // date: "2078-09-09",
-      // price: "Nrs1000-1500",
-      // publised_by: "Ujjwal Sapkota",
-      // category: "Electricity",
+      title: "Electrician Needed",
+      date: "2078-09-09",
+      price: "Nrs1000-1500",
+      publised_by: "Ujjwal Sapkota",
+      category: "Electricity",
       src: image,
     },
   ]);
@@ -71,9 +71,9 @@ export default function Detail() {
             refreshControl={
               <RefreshControl refreshing={Refreshing} colors={["#ff00ff"]} />
             }
-            ListEmptyComponent={()=>(
-              <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',marginRight:10}}>You Have No Appointments</Text>
-            )}
+            // ListEmptyComponent={()=>(
+            //   <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',marginRight:10}}>You Have No Appointments</Text>
+            // )}
             renderItem={({ item }) => (
               <View style={styles.card}>
                 <View style={styles.carditem}>
@@ -91,20 +91,20 @@ export default function Detail() {
                   <View>
                   </View>
                 </View>
-                <View style={styles.bookadmin}>
+                 <View style={styles.bookadmin}>
 
-                <TouchableOpacity>
-                    <View style={styles.accept}>
-                    <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Edit</Text>
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity>
+                        <View style={styles.accept}>
+                        <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Accept</Text>
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity>
-                <View style={styles.reject}>
-                <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Cancle</Text>
-                </View>
-                </TouchableOpacity>
-                </View>   
+                    <TouchableOpacity>
+                 <View style={styles.reject}>
+                  <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Reject</Text>
+                  </View>
+                  </TouchableOpacity>
+               </View>   
               </View>
             )}
           />
