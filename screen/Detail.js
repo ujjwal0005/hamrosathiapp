@@ -59,6 +59,7 @@ export default function Detail() {
 
   return (
     <View style={styles.container}>
+      <ScrollView>
       <View style={styles.appointment}>
         <Text style={{fontSize:20,color:"#fff"}}>Your Appointments</Text>
     </View>
@@ -84,6 +85,9 @@ export default function Detail() {
                     <Text style={styles.text}>Starting Time : {item.starttime}</Text>
                     <Text style={styles.text}>End Time :  {item.endtime}</Text>
                     <Text style={styles.text}>Description : haha</Text>
+                    {item.endtime?
+                    <Text style={styles.text}>Report : {item.endtime? "Yes": "No Report Uploaded" }</Text>
+                    :null}
 
                   </View>
                   </View>
@@ -91,21 +95,30 @@ export default function Detail() {
                   <View>
                   </View>
                 </View>
+                {item.is_verified?
+               <View>
+               <TouchableOpacity>
+                   <View style={styles.meeting}>
+                   <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'white'}}>Join Meeting Link</Text>
+                   </View>
+               </TouchableOpacity>
+               </View>
+                : 
                 <View style={styles.bookadmin}>
-
                 <TouchableOpacity>
                     <View style={styles.accept}>
                     <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Edit</Text>
                     </View>
                 </TouchableOpacity>
-
                 <TouchableOpacity>
                 <View style={styles.reject}>
                 <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Cancle</Text>
                 </View>
                 </TouchableOpacity>
-                </View>   
               </View>
+                }
+             </View>
+
             )}
           />
         </View>
@@ -127,6 +140,7 @@ export default function Detail() {
                     <Text style={styles.text}>Date : {item.date}</Text>
                     <Text style={styles.text}>Starting Time : {item.starttime}</Text>
                     <Text style={styles.text}>End Time :  {item.endtime}</Text>
+                    <Text style={styles.text}>Remarks : All Good</Text>
                     <Text style={styles.text}>Status : Not Completed</Text>
                   </View>
                   </View>
@@ -136,6 +150,7 @@ export default function Detail() {
             )}
           />
         </View>
+        </ScrollView>
     </View>
   );
 }
@@ -157,10 +172,20 @@ const styles = StyleSheet.create({
     paddingBottom:10,
     backgroundColor:"#247BA0"
   },
+  meeting:{
+    alignItems: 'center', 
+    justifyContent: 'center',
+    width:"100%",
+    paddingTop: 10,
+    paddingBottom:10,
+    marginTop: 20,
+    borderRadius: 25,
+    backgroundColor: "#ff0000",
+  },
   accept:{
     alignItems: 'center', 
     justifyContent: 'center',
-    width:150,
+    width:100,
     paddingTop: 10,
     paddingBottom:10,
     marginTop: 20,
@@ -169,11 +194,21 @@ const styles = StyleSheet.create({
     borderColor:"black",
     // backgroundColor: "#ff0000",
   },
+  report:{
+    alignItems: 'center', 
+    justifyContent: 'center',
+    width:100,
+    paddingTop: 10,
+    paddingBottom:10,
+    marginTop: 20,
+    borderRadius: 25,
+    backgroundColor: "#006400",
+  },
 
   reject:{
     alignItems: 'center', 
     justifyContent: 'center',
-    width:150,
+    width:100,
     paddingTop: 10,
     paddingBottom:10,
     marginTop: 20,
@@ -185,9 +220,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems: 'center', 
     justifyContent: 'space-around',
-    paddingTop: 10,
     paddingBottom:10,
-    marginTop: 20,
     borderRadius: 25,
   },
   book:{

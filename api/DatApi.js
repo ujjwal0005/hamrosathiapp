@@ -1,6 +1,4 @@
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const baseUrl = "https://hamrosath.herokuapp.com";
 
@@ -14,7 +12,7 @@ export const createblog = async(title,content,blogimage,userToken) => {
 	})
 	formdata.append('title',title);
 	formdata.append('content',content);
-	console.log(formdata.title)
+	console.log(formdata.image)
 	try {
 		const {data,status} = await axios({
 			method: "post",
@@ -99,29 +97,35 @@ export const getdoctor = async(userToken,id) =>{
 	}
 }
 
-export const bookappointment = async(userToken,user,date,starttime,endtime,doctor) =>{	
+export const bookappointment = async(userToken,userid,dd,starttime,endtime,doctor,image,desc) =>{
 	try{
-		const{data, status} = await axios({
-			method: "post",
-			url: `${baseUrl}/appointment/`,
-			data: {
-				'user':user,
-				'date':date,
-				'starttime':starttime,
-				'endtime':endtime,
-				'doctor':doctor,
-			},
-			headers: {
-				"Authorization" : `Token ${userToken}`	
-			}
-		});
-		console.log(data)
-		return {
-			data,
-			status
-		};
+	const formdata = new FormData()
+	formdata.append('report',{
+		uri:image,
+		type:'image/jpg',
+		name:image.split("/").pop()
+	})
+	console.log(formdata.report)
+	formdata.append('user', userid);
+	formdata.append('date', dd);
+	formdata.append('starttime', starttime);
+	formdata.append('endtime', endtime);
+	formdata.append('doctor', doctor);
+	formdata.append('description', desc);
+	formdata.append('usertoken',userToken)
+	const{data, status} = await axios({
+		method: "post",
+		url: `${baseUrl}/appointment/`,
+		data: formdata,
+		headers: {
+			"Authorization" : `Token ${userToken}`,
+			"Content-Type" : 'multipart/form-data'		
+		}
+	});
+		// console.log(data)
+		return {data,status};
 	}catch (error) {
-		console.log('doctor error', error.response)
+		console.log('jsdkjsdlkjsdj', error)
 		return { status: "failed", message: error.message };
 	}
 }
@@ -166,4 +170,28 @@ export const getdoctorappointment = async(userToken) =>{
 		console.log('doctor error', error.response.data)
 		return { status: "failed", message: error.message };
 	}
+}
+
+export const updatedoctorappointment = async(userToken,verify,cancle,complete,remarks,id)=>{
+	try{
+		const formdata = new FormData()
+		formdata.append('is_verified', verify);
+		formdata.append('is_cancelled', cancle);
+		formdata.append('is_completed', complete);
+		formdata.append('remarks', remarks);
+		const{data, status} = await axios({
+			method: "put",
+			url: `${baseUrl}/updateappointment/${id}`,
+			data: formdata,
+			headers: {
+				"Authorization" : `Token ${userToken}`,
+				"Content-Type" : 'multipart/form-data'		
+			}
+		});
+			// console.log(data)
+			return {data,status};
+		}catch (error) {
+			console.log('jsdkjsdlkjsdj', error)
+			return { status: "failed", message: error.message };
+		}
 }

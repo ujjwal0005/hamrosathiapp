@@ -1,4 +1,4 @@
-import { ActivityIndicator} from "react-native";
+import { ActivityIndicator,ScrollView} from "react-native";
 import React, { useEffect,useState } from "react";
 import {
   Button,
@@ -16,7 +16,7 @@ import { useNavigation,useRoute } from "@react-navigation/native";
 import { AuthContext } from "../components/context";
 import { Title,Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { getdoctor } from '../api/DatApi';
 import { bookappointment } from "../api/DatApi";
 
@@ -25,16 +25,10 @@ const Appointment = () => {
   const {authToken,signOut,userData} = React.useContext(AuthContext);
   const [Refreshing, setRefreshing] = useState(false);
   const back = { uri: "../assets/logo.png" };
+  const [Items, setItems]= useState({
+
+  })
   const image = require("../assets/doc.jpeg");
-  const [Items, setItems] = useState([
-    {
-      name : "Dr. Vishal Shrestha",
-      experience : "Psychologist",
-      availabe_time: "10am - 5am",
-      phone: "986133690",
-      src: image,
-    },
-  ]);
   const route = useRoute();
   const {id} = route.params;
   const [date, setDate] = useState(new Date())
@@ -44,6 +38,17 @@ const Appointment = () => {
   const [profiledata,setprofiledata] = useState()
   const [starttime,setStartTime] = useState()
   const[endtime,setendTime]=useState()
+  const[desc,setDesc]=useState('numberskjdfhsjhdsjkhdsjkh');
+  const [report, setReport] = useState();
+  const opengallery = async() =>{
+    const result = await launchImageLibrary({mediaType:'photo',quality:0.01});
+    console.log(result);
+    if(!result.didCancel){
+      result.assets.map(({uri})=>{
+        setReport(uri);
+  })
+}
+}
   
 
   const doctordataget = async() => {
@@ -59,8 +64,7 @@ const Appointment = () => {
       setLoading(false)
     }
   }
-  
-  
+
     useEffect(() => {
       doctordataget();
     }, [])
@@ -68,9 +72,12 @@ const Appointment = () => {
 
     const appointementcreate = async() => {
      const dd = (`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`)
+     const userid = userData.id
+     const doctor = id
+
       try {
         setLoading(true)
-        const {data , status} = await bookappointment(authToken,user=userData.id,dd,starttime,endtime,doctor=id);
+        const {data , status} = await bookappointment(authToken,userid,dd,starttime,endtime,doctor,report,desc);
         if (data){
           navigation.navigate('Detail')
         }
@@ -83,6 +90,7 @@ const Appointment = () => {
   return (
 
     <View style={styles.container}>
+      <ScrollView style={{marginBottom:120}}>
       { profiledata? (
         <View style={styles.itemcard}>
           <View style={styles.userInfoSection}>
@@ -183,6 +191,39 @@ const Appointment = () => {
                         </TouchableOpacity>
                       </View>
                     </View>
+
+                    <View style={styles.description}>
+                      <Text style={styles.desc}>Description</Text>
+                      <TextInput
+                        multiline
+                        numberOfLines={5}
+                        style={styles.textin}
+                        placeholder="Write your  Descrption here"
+                        placeholderTextColor="#247BA0"
+                        value={desc}
+                        onChangeText={(desc) => setDesc(desc)}
+                      />
+                    </View>
+                    <View style={styles.data}>
+                        <Text style={styles.bidbuttontext}>Upload Your Report (Image Only)</Text>
+                        <View style={styles.imgupload}>
+                        <TouchableOpacity onPress={opengallery}>
+                        {report? <Image source={{uri:report}}
+                            style={{
+                              height: 100,
+                              width: 100,
+                              marginTop:0,
+                              marginLeft:10,
+                              // alignSelf: 'center'
+                            }}
+                            /> :null}
+                            <View>
+                                <Text style={styles.bidbuttontext}>Upload Report</Text>
+                            </View>
+                            </TouchableOpacity>
+
+                        </View>
+                  </View>
                   </View>
                   <TouchableOpacity onPress = {()=> appointementcreate()}>
                   <View style={styles.bookappointmnet}>
@@ -191,6 +232,7 @@ const Appointment = () => {
                   </TouchableOpacity>
               </View>
         ): null}
+        </ScrollView>
     </View>
   );
 }
@@ -201,6 +243,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  imgupload:{
+    flex:1,
+    flexDirection: 'row',
+    // justifyContent:'space-around'
+  },
+    textin:{
+        borderWidth:1,
+        padding:10,
+        borderRadius:5,
+        borderColor:"#247BA0"
+    },
+    description:{
+      marginTop:10,
+      width:"95%", 
+      // alignItems: "center",
+      alignSelf:"center",
+    },
   bookappointmnet:{
     marginTop: 30, 
     borderRadius: 10,
@@ -209,13 +268,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignSelf:"center",
-    borderColor:"#247BA0",
-    borderWidth:1,
-    // margin:5,
+    backgroundColor: "#ff0000",
     marginRight:20
   },
   boonwo:{
-    color:"#247BA0",
+    color:"white",
+    fontFamily:"bold",
+    fontSize:18,
   },
   exp:{
     marginBottom:5,
@@ -228,7 +287,9 @@ const styles = StyleSheet.create({
     marginLeft:20,
     color:"#247BA0",
     marginBottom:10,
-    fontSize:15
+    fontSize:20,
+    fontWeight: "bold"
+  
   },
   bookappoint:{
     alignSelf:"center"

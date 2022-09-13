@@ -14,11 +14,11 @@ import {
   View,
   TouchableOpacity,
   RefreshControl,
+  SafeAreaView
 } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Title } from "react-native-paper";
 import { AuthContext } from '../components/context';
-import { getuserappointment } from "../api/DatApi";
+import { getdoctorappointment,updatedoctorappointment } from "../api/DatApi";
 
 
 export default function DoctorDetails() {
@@ -41,7 +41,7 @@ export default function DoctorDetails() {
 
   const getuserappt = async() => {
     try {
-      const {data , status } = await getuserappointment(authToken);
+      const {data , status } = await getdoctorappointment(authToken);
       console.log('dhdhdh:::::',data)
       setprofiledata(data)
       setLoading(false)
@@ -51,22 +51,41 @@ export default function DoctorDetails() {
       setLoading(false)
     }
   }
-  
-  
+
     useEffect(() => {
       getuserappt();
     }, [])
 
+    const updateuserappt = async() => {
+      try {
+        const {data , status } = await updatedoctorappointment(authToken);
+        console.log('dhdhdh:::::',data)
+        setprofiledata(data)
+        setLoading(false)
+        
+      } catch (error) {
+        console.log('error::', error)
+        setLoading(false)
+      }
+    }
+    
+      useEffect(() => {
+        updateuserappt();
+      }, [])
+
   return (
     <View style={styles.container}>
+      <SafeAreaView>
+<ScrollView>
+      <>
       <View style={styles.appointment}>
         <Text style={{fontSize:20,color:"#fff"}}>Your Appointments</Text>
-    </View>
-    <Title style={{fontSize:16,marginLeft:10,marginTop:10}}>Upcoming Appointment</Title>
+      </View>
+     <Title style={{fontSize:16,marginLeft:10,marginTop:10}}>Upcoming Appointment</Title>
         <View style={styles.itemcard}>
           <FlatList
             keyExtractor={(item, index) => index.toString()}
-            data={profiledata?profiledata.slice(-1):[]}
+            data={profiledata}
             style={styles.body}
             refreshControl={
               <RefreshControl refreshing={Refreshing} colors={["#ff00ff"]} />
@@ -79,12 +98,15 @@ export default function DoctorDetails() {
                 <View style={styles.carditem}>
                   <View style={styles.myappointment}>
                   <View style={styles.details}>
-                    <Text style={styles.text}>Doctor Name : {item.doctor.name}</Text>
+                    <Text style={styles.text}>Client Name : {item.user.name}</Text>
                     <Text style={styles.text}>Date : {item.date}</Text>
                     <Text style={styles.text}>Starting Time : {item.starttime}</Text>
                     <Text style={styles.text}>End Time :  {item.endtime}</Text>
-                    <Text style={styles.text}>Description : haha</Text>
-
+                    <Text style={styles.text}>Phone : {item.user.number}</Text>
+                    <Text style={styles.text}>Email : {item.user.email}</Text>
+                    <TouchableOpacity style={styles.report}>
+                        <Text style={{fontSize:15,color:"black",fontWeight:'bold'}}>View Report</Text>
+                    </TouchableOpacity>
                   </View>
                   </View>
                  <Image style={styles.image} source={ require("../assets/doc.jpeg")}/>
@@ -92,23 +114,48 @@ export default function DoctorDetails() {
                   </View>
                 </View>
                  <View style={styles.bookadmin}>
+                {item.is_verified? 
+                    null
+                :<TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
+                <View style={styles.accept}>
+                <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Accept</Text>
+                </View>
+                </TouchableOpacity>}
 
-                    <TouchableOpacity>
-                        <View style={styles.accept}>
-                        <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Accept</Text>
+                    <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
+                        <View style={styles.complete}>
+                        <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Complete</Text>
                         </View>
                     </TouchableOpacity>
+                    {item.is_verified? 
+                    <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
+                    <View style={styles.reject}>
+                      <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Update</Text>
+                      </View>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
+                    <View style={styles.reject}>
+                      <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Reject</Text>
+                      </View>
+                    </TouchableOpacity>
+                    }
 
-                    <TouchableOpacity>
-                 <View style={styles.reject}>
-                  <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Reject</Text>
-                  </View>
-                  </TouchableOpacity>
-               </View>   
+               </View> 
+               {item.is_verified? 
+               <View>
+                <TouchableOpacity>
+                    <View style={styles.meeting}>
+                    <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'white'}}>Create Meeting Link</Text>
+                    </View>
+                </TouchableOpacity>
+                </View>
+                :null}   
               </View>
             )}
           />
         </View>
+      </>
         <Title style={{fontSize:16,marginLeft:10}}>Your History</Title>
         <View style={styles.itemcard}>
           <FlatList
@@ -123,11 +170,13 @@ export default function DoctorDetails() {
                 <View style={styles.carditem}>
                   <View style={styles.myappointment}>
                   <View style={styles.details}>
-                    <Text style={styles.text}>Doctor Name : {item.doctor.name}</Text>
+                  <Text style={styles.text}>Client Name : {item.user.name}</Text>
                     <Text style={styles.text}>Date : {item.date}</Text>
                     <Text style={styles.text}>Starting Time : {item.starttime}</Text>
                     <Text style={styles.text}>End Time :  {item.endtime}</Text>
-                    <Text style={styles.text}>Status : Not Completed</Text>
+                    <Text style={styles.text}>Phone : {item.user.number}</Text>
+                    <Text style={styles.text}>Status : {item.is_completed? "Completed" : "Not Completed" }</Text>
+
                   </View>
                   </View>
                   <Image style={styles.image} source={ require("../assets/doc.jpeg")}/>
@@ -136,6 +185,9 @@ export default function DoctorDetails() {
             )}
           />
         </View>
+        </ScrollView>
+        </SafeAreaView>
+
     </View>
   );
 }
@@ -160,7 +212,7 @@ const styles = StyleSheet.create({
   accept:{
     alignItems: 'center', 
     justifyContent: 'center',
-    width:150,
+    width:100,
     paddingTop: 10,
     paddingBottom:10,
     marginTop: 20,
@@ -169,13 +221,41 @@ const styles = StyleSheet.create({
     borderColor:"black",
     // backgroundColor: "#ff0000",
   },
+  report:{
+    width:100,
+    paddingTop: 10,
+    paddingBottom:10,
+    // backgroundColor: "#ff0000",
+  },
+  meeting:{
+    alignItems: 'center', 
+    justifyContent: 'center',
+    width:"100%",
+    paddingTop: 10,
+    paddingBottom:10,
+    marginTop: 20,
+    borderRadius: 25,
+    backgroundColor: "#ff0000",
+  },
+
+  complete:{
+    alignItems: 'center', 
+    justifyContent: 'center',
+    width:100,
+    paddingTop: 10,
+    paddingBottom:10,
+    marginTop: 20,
+    borderRadius: 25,
+    backgroundColor: "#006400",
+   
+  },
 
   reject:{
     alignItems: 'center', 
     justifyContent: 'center',
-    width:150,
-    paddingTop: 10,
+    width:100,
     paddingBottom:10,
+    paddingTop: 10,
     marginTop: 20,
     borderRadius: 25,
     backgroundColor: "#ff0000",
@@ -185,18 +265,14 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems: 'center', 
     justifyContent: 'space-around',
-    paddingTop: 10,
     paddingBottom:10,
-    marginTop: 20,
     borderRadius: 25,
   },
   book:{
     flexDirection:'row',
     alignItems: 'center', 
     justifyContent: 'center',
-    paddingTop: 10,
     paddingBottom:10,
-    marginTop: 20,
     borderRadius: 25,
     backgroundColor: "#ff0000",
   },
