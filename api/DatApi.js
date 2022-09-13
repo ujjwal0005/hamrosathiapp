@@ -172,20 +172,57 @@ export const getdoctorappointment = async(userToken) =>{
 	}
 }
 
-export const updatedoctorappointment = async(userToken,verify,cancle,complete,remarks,id)=>{
+export const updatedoctorappointment = async(userToken,is_complete,id)=>{
 	try{
-		const formdata = new FormData()
-		formdata.append('is_verified', verify);
-		formdata.append('is_cancelled', cancle);
-		formdata.append('is_completed', complete);
-		formdata.append('remarks', remarks);
 		const{data, status} = await axios({
 			method: "put",
-			url: `${baseUrl}/updateappointment/${id}`,
-			data: formdata,
+			url: `${baseUrl}/updateappointment/${id}/`,
+			data: {
+				"is_completed": is_complete,
+			},
 			headers: {
-				"Authorization" : `Token ${userToken}`,
-				"Content-Type" : 'multipart/form-data'		
+				"Authorization" : `Token ${userToken}`,	
+			}
+		});
+			// console.log(data)
+			return {data,status};
+		}catch (error) {
+			console.log('jsdkjsdlkjsdj', error)
+			return { status: "failed", message: error.message };
+		}
+}
+
+export const updatedoctoraccept = async(userToken,is_verified,id)=>{
+	try{
+		const{data, status} = await axios({
+			method: "put",
+			url: `${baseUrl}/updateappointment/${id}/`,
+			data: {
+				"is_verified": is_verified,
+			},
+			headers: {
+				"Authorization" : `Token ${userToken}`,	
+			}
+		});
+			// console.log(data)
+			return {data,status};
+		}catch (error) {
+			console.log('jsdkjsdlkjsdj', error)
+			return { status: "failed", message: error.message };
+		}
+}
+
+
+export const updatedoctorreject = async(userToken,is_cancelled,id)=>{
+	try{
+		const{data, status} = await axios({
+			method: "put",
+			url: `${baseUrl}/updateappointment/${id}/`,
+			data: {
+				"is_cancelled": is_cancelled,
+			},
+			headers: {
+				"Authorization" : `Token ${userToken}`,	
 			}
 		});
 			// console.log(data)

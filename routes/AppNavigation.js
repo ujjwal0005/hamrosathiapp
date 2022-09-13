@@ -18,6 +18,7 @@ import CreateBlog from "../screen/CreateBlog";
 import EditDoctorProfile from "../screen/EditDoctorProfile";
 import { AuthContext } from '../components/context';
 import DoctorDetails from "../screen/DoctorDetails";
+import Editappointment from "../screen/Editappointment";
 
 const Tab = createBottomTabNavigator();
 const appHomeStack = createNativeStackNavigator();
@@ -68,6 +69,7 @@ const AppNavigationStack = () => {
             <appHomeStack.Screen name="DoctorProfile" component={EditDoctorProfile} />
             <appHomeStack.Screen name="DoctorDetails" component={DoctorDetails} />
             <appHomeStack.Screen name="Appointment" component={Appointment} />
+            <appHomeStack.Screen name="EditAppointment" component={Editappointment} />
             <appHomeStack.Screen name="Post" component={Post} />
             <appHomeStack.Screen name="Createblog" component={CreateBlog} />
         </appHomeStack.Navigator>

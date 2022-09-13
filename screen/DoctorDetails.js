@@ -12,16 +12,20 @@ import {
   TextInput,
   SectionList,
   View,
+  Alert,
   TouchableOpacity,
   RefreshControl,
-  SafeAreaView
+  SafeAreaView,
+  ActivityIndicator
 } from "react-native";
 import { Title } from "react-native-paper";
 import { AuthContext } from '../components/context';
-import { getdoctorappointment,updatedoctorappointment } from "../api/DatApi";
+import { useNavigation,useRoute } from "@react-navigation/native";
+import { getdoctorappointment,updatedoctorappointment,updatedoctoraccept,updatedoctorreject} from "../api/DatApi";
 
 
 export default function DoctorDetails() {
+  const navigation = useNavigation();
   const back = { uri: "../assets/logo.png" };
   const image = require("../assets/plub.jpg");
   const [Items, setItems] = useState([
@@ -38,6 +42,8 @@ export default function DoctorDetails() {
   const [isLoading,setLoading] = useState(true)
   const [profiledata,setprofiledata] = useState()
   const [Refreshing, setRefreshing] = useState(false);
+
+ 
 
   const getuserappt = async() => {
     try {
@@ -56,9 +62,41 @@ export default function DoctorDetails() {
       getuserappt();
     }, [])
 
-    const updateuserappt = async() => {
+    const updateuserappt = async(id) => {
+      setLoading(true)
       try {
-        const {data , status } = await updatedoctorappointment(authToken);
+        let is_complete = true
+        const {data , status } = await updatedoctorappointment(authToken,is_complete,id);
+        console.log('dhdhdh:::::',data)
+        setprofiledata(data)
+        setLoading(false)
+        
+      } catch (error) {
+        console.log('error::', error)
+        setLoading(false)
+      }
+    }
+
+    const updateuseraccept = async(id) => {
+      setLoading(true)
+      try {
+        let is_verified = true
+        const {data , status } = await updatedoctoraccept(authToken,is_verified,id);
+        console.log('dhdhdh:::::',data)
+        setprofiledata(data)
+        setLoading(false)
+        
+      } catch (error) {
+        console.log('error::', error)
+        setLoading(false)
+      }
+    }
+
+    const updateusereject = async(id) => {
+      setLoading(true)
+      try {
+        let is_cancelled = true
+        const {data , status } = await updatedoctorreject(authToken,is_cancelled,id);
         console.log('dhdhdh:::::',data)
         setprofiledata(data)
         setLoading(false)
@@ -69,15 +107,12 @@ export default function DoctorDetails() {
       }
     }
     
-      useEffect(() => {
-        updateuserappt();
-      }, [])
-
   return (
     <View style={styles.container}>
       <SafeAreaView>
 <ScrollView>
-      <>
+{isLoading? <ActivityIndicator size="small" color="#0000ff" />:
+          <>
       <View style={styles.appointment}>
         <Text style={{fontSize:20,color:"#fff"}}>Your Appointments</Text>
       </View>
@@ -94,7 +129,11 @@ export default function DoctorDetails() {
             //   <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',marginRight:10}}>You Have No Appointments</Text>
             // )}
             renderItem={({ item }) => (
+              <>
+              {item.is_completed && item.is_cancelled?null :
               <View style={styles.card}>
+                
+                
                 <View style={styles.carditem}>
                   <View style={styles.myappointment}>
                   <View style={styles.details}>
@@ -110,52 +149,47 @@ export default function DoctorDetails() {
                   </View>
                   </View>
                  <Image style={styles.image} source={ require("../assets/doc.jpeg")}/>
-                  <View>
-                  </View>
                 </View>
+
                  <View style={styles.bookadmin}>
                 {item.is_verified? 
                     null
-                :<TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
+                :<TouchableOpacity onPress = {() => updateuseraccept(item.id)}>
                 <View style={styles.accept}>
                 <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Accept</Text>
                 </View>
                 </TouchableOpacity>}
-
-                    <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
-                        <View style={styles.complete}>
-                        <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Complete</Text>
-                        </View>
-                    </TouchableOpacity>
-                    {item.is_verified? 
-                    <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
-                    <View style={styles.reject}>
-                      <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Update</Text>
-                      </View>
-                    </TouchableOpacity>
+                  {item.is_verified? 
+                    null
                     :
-                    <TouchableOpacity onPress = {() => navigation.navigate('DoctorDetails',{id:item.id})}>
+                    <TouchableOpacity onPress = {() => updateusereject(item.id)}>
                     <View style={styles.reject}>
                       <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Reject</Text>
                       </View>
                     </TouchableOpacity>
                     }
 
-               </View> 
+                    </View> 
                {item.is_verified? 
-               <View>
+               <View style={styles.meet}>
                 <TouchableOpacity>
                     <View style={styles.meeting}>
                     <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'white'}}>Create Meeting Link</Text>
                     </View>
                 </TouchableOpacity>
+                <TouchableOpacity onPress = {() => updateuserappt(item.id)}>
+                        <View style={styles.complete}>
+                        <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Complete</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 :null}   
               </View>
+          }
+                </>
             )}
-          />
+            />
         </View>
-      </>
         <Title style={{fontSize:16,marginLeft:10}}>Your History</Title>
         <View style={styles.itemcard}>
           <FlatList
@@ -175,7 +209,7 @@ export default function DoctorDetails() {
                     <Text style={styles.text}>Starting Time : {item.starttime}</Text>
                     <Text style={styles.text}>End Time :  {item.endtime}</Text>
                     <Text style={styles.text}>Phone : {item.user.number}</Text>
-                    <Text style={styles.text}>Status : {item.is_completed? "Completed" : "Not Completed" }</Text>
+                    <Text style={styles.text}>Status : {item.is_completed==false && item.is_cancelled? "Cancelled" : "Completed" }</Text>
 
                   </View>
                   </View>
@@ -185,6 +219,8 @@ export default function DoctorDetails() {
             )}
           />
         </View>
+        </>
+          }
         </ScrollView>
         </SafeAreaView>
 
@@ -209,6 +245,10 @@ const styles = StyleSheet.create({
     paddingBottom:10,
     backgroundColor:"#247BA0"
   },
+  meet:{
+    flexDirection:'row',
+    justifyContent:"space-between"
+  },
   accept:{
     alignItems: 'center', 
     justifyContent: 'center',
@@ -230,7 +270,7 @@ const styles = StyleSheet.create({
   meeting:{
     alignItems: 'center', 
     justifyContent: 'center',
-    width:"100%",
+    width:"130%",
     paddingTop: 10,
     paddingBottom:10,
     marginTop: 20,

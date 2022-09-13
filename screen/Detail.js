@@ -19,18 +19,16 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Title } from "react-native-paper";
 import { AuthContext } from '../components/context';
 import { getuserappointment } from "../api/DatApi";
+import { useNavigation,useRoute } from "@react-navigation/native";
+import { updatedoctorreject} from "../api/DatApi";
 
 
 export default function Detail() {
+  const navigation = useNavigation();
   const back = { uri: "../assets/logo.png" };
   const image = require("../assets/plub.jpg");
   const [Items, setItems] = useState([
     {
-      // title: "Electrician Needed",
-      // date: "2078-09-09",
-      // price: "Nrs1000-1500",
-      // publised_by: "Ujjwal Sapkota",
-      // category: "Electricity",
       src: image,
     },
   ]);
@@ -51,12 +49,25 @@ export default function Detail() {
       setLoading(false)
     }
   }
-  
-  
     useEffect(() => {
       getuserappt();
     }, [])
 
+
+    const updateusereject = async(id) => {
+      setLoading(true)
+      try {
+        let is_cancelled = true
+        const {data , status } = await updatedoctorreject(authToken,is_cancelled,id);
+        console.log('dhdhdh:::::',data)
+        setprofiledata(data)
+        setLoading(false)
+        
+      } catch (error) {
+        console.log('error::', error)
+        setLoading(false)
+      }
+    }
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -105,12 +116,13 @@ export default function Detail() {
                </View>
                 : 
                 <View style={styles.bookadmin}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress = {() => navigation.navigate('EditAppointment',{id:item.id})}>
                     <View style={styles.accept}>
                     <Text style={{fontSize:18,color:"#fff",fontWeight:'bold',color:'black'}}>Edit</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                
+                <TouchableOpacity onPress = {() => updateusereject(item.id)}>
                 <View style={styles.reject}>
                 <Text style={{fontSize:18,color:"#fff",fontWeight:'bold'}}>Cancle</Text>
                 </View>
@@ -141,7 +153,7 @@ export default function Detail() {
                     <Text style={styles.text}>Starting Time : {item.starttime}</Text>
                     <Text style={styles.text}>End Time :  {item.endtime}</Text>
                     <Text style={styles.text}>Remarks : All Good</Text>
-                    <Text style={styles.text}>Status : Not Completed</Text>
+                    <Text style={styles.text}>Status : {item.is_completed==false && item.is_cancelled? "Cancelled" : "Completed" }</Text>
                   </View>
                   </View>
                   <Image style={styles.image} source={ require("../assets/doc.jpeg")}/>
